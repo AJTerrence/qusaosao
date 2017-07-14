@@ -14,7 +14,7 @@ module.exports = {
             message: message
         }
         const url = 'https://sms-api.luosimao.com/v1/send.json'
-        const key = 'key-edc07f15d2fee2b10f4f2f05296f8234'
+        const key = 'key-'
         const content = querystring.stringify(postData)
         return new Promise(function(resolve,reject){
             request.post(url)
