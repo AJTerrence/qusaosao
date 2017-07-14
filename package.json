@@ -1,0 +1,27 @@
+{
+  "name": "qusaosao",
+  "version": "1.0.0",
+  "description": "koa2 server demo",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --harmony app.js"
+  },
+  "author": "Terrence",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-logger": "^3.0.0",
+    "koa-router": "^7.2.0",
+    "koa-session": "^5.4.0",
+    "koa-static": "^3.0.0",
+    "mongoose": "^4.10.4",
+    "path": "^0.12.7",
+    "lodash": "^4.17.4",
+    "superagent": "^3.5.2",
+    "querystring": "^0.2.0",
+    "bluebird": "^3.5.0",
+    "crypto": "^0.0.3"
+  }
+}
