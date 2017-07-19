@@ -66,6 +66,7 @@ const getVerifyCode = async function(ctx){
 */
 const getVerifyCode = async function(ctx){
 	const cellphone = ctx.query.cellphone
+	if(cellphone){
         try{
             const result = await models.userInfo.findOne({account: cellphone})
             if(result){
@@ -119,6 +120,9 @@ const getVerifyCode = async function(ctx){
                 message: '发生错误:' + e.message
             }
         }
+    }else{
+    	console.log('error')
+    }
 }
 
 const register = function(ctx){
@@ -126,6 +130,7 @@ const register = function(ctx){
 	const password = ctx.request.body.password
 	const code = ctx.request.body.code
 	const name = ctx.request.body.name
+	if(cellphone && password && code && name){
 	if(_code.CODE == code){
 		const salt = account + new Date().getTime() + secret
 		const pwd = crypto.createHmac('sha1',salt).update(password + secret).digest().toString('base64')
@@ -170,6 +175,9 @@ const register = function(ctx){
 			message: '验证码错误'
 		}
 	}
+}else{
+	console.log('error')
+}
 }
 
 module.exports = {
