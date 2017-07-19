@@ -69,7 +69,7 @@ const getVerifyCode = async function(ctx){
 	const cellphone = ctx.query.cellphone
 	if(cellphone){
         try{
-            const result = await models.userInfo.findOne({cellphone: cellphone})
+            const result = await models.userInfo.findOne({account: cellphone})
             if(result){
                 ctx.body = {
                     success: false,
@@ -136,7 +136,7 @@ const register = function(ctx){
 		const salt = cellphone + new Date().getTime() + secret
 		const pwd = crypto.createHmac('sha1',salt).update(password + secret).digest().toString('base64')
 		const user = {
-			cellphone: cellphone,
+			account: cellphone,
 			password: pwd,
 			salt: salt,
 			email: '',
