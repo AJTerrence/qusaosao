@@ -1,6 +1,6 @@
 module.exports = {
   PORT: process.env.PORT || 3000,
-  cookieSecret: 'nowdone',
+  cookieSecret: 'koa:sess',
   mongo: {
     'development': {
       connectionString: 'mongodb://localhost/qusaosao'

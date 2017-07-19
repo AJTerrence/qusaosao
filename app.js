@@ -3,12 +3,12 @@ const mongoose = require('mongoose')
 const path = require('path')
 const static = require('koa-static')
 const Router = require('koa-router')
-const bodyparser = require('koa-bodyparser')
-const session = require('koa-session')
+const bodyParser = require('koa-bodyparser')
+const session = require('koa-session2')
 const config = require('./config/config')
-const main = require('./routes/main')
+const device = require('./routes/device')
 const auth = require('./routes/auth')
-const index = require('./routes/index')
+const order = require('./routes/order')
 
 const app = new Koa()
 const router = new Router()
@@ -17,13 +17,14 @@ require('./config/init')(app,mongoose)
 
 app.use(static(path.resolve('views')))
 
-app.use(bodyparser())
+app.use(bodyParser())
 
-app.keys = [config.cookieSecret]
-app.use(session(app))
+app.use(session({
+	key: config.cookieSecret
+}))
 
-router.use('/',index.routes(),index.allowedMethods())
-router.use('/api',main.routes(),main.allowedMethods())
+router.use('/api',order.routes(),order.allowedMethods())
+router.use('/api',device.routes(),device.allowedMethods())
 router.use('/auth',auth.routes(),auth.allowedMethods())
 app.use(router.routes())
 

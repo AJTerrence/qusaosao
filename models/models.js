@@ -30,14 +30,28 @@ const deviceSchema = mongoose.Schema({
 	deviceActive: String,
 	store: String,
 	address: String,
+	price: String,
 	remarks: String,
+	presentType: String,
+	stock: Number,
+	time: String
+})
+
+const orderSchema = mongoose.Schema({
+	account: String,
+	deviceId: String,
+	openId: String,
+	type: String,//onlinePayment,adsRevenue,cash
+	price: Number,
 	time: String
 })
 
 const userInfo = mongoose.model('userInfo',userSchema)
 const deviceInfo = mongoose.model('deviceInfo',deviceSchema)
+const orderInfo = mongoose.model('orderInfo',orderSchema)
 
 module.exports = {
 	userInfo,
-	deviceInfo
+	deviceInfo,
+	orderInfo
 }

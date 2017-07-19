@@ -2,7 +2,7 @@ const models = require('../models/models')
 const user = require('./user')
 const _ = require('lodash')
 
-const getEachDeviceDetails = async function(){
+const getEachDeviceDetails = async function(ctx){
 	const deviceId = ctx.query.deviceId
 	try{
 		const result = await models.deviceInfo.findOne({deviceId: deviceId})
@@ -25,15 +25,14 @@ const getEachDeviceDetails = async function(){
 	}
 }
 
-const deviceRegister = async function(){
-	const deviceId = ctx.params.deviceId
+const deviceRegister = async function(ctx){
+	const deviceId = ctx.query.deviceId
 	try{
 		const result = await models.deviceInfo.findOne({deviceId: deviceId})
 		if(result){
 			ctx.body = {
 				success: false,
-				message: '该设备已注册',
-				data: result
+				message: '该设备已注册'
 			}
 		}else{
 			const device = {
@@ -44,7 +43,10 @@ const deviceRegister = async function(){
 				deviceActive: '离线',
 				store: '',
 				address: '',
+				price: '1',
 				remarks: '',
+				presentType: '' || '纸巾',
+				stock: '' || '0',
 				time: new Date()
 			}
 			models.deviceInfo.create(device)
@@ -58,7 +60,7 @@ const deviceRegister = async function(){
 	}
 }
 
-const deviceManagement_all = async function(){
+const deviceManagement_all = async function(ctx){
 	const account = ctx.session.account
 	try{
 		const result = await models.deviceInfo.find({account: account})
@@ -174,6 +176,48 @@ const deviceManagement_updateNum = async function(){
 	}
 }
 
+const deviceManagement_setprice = async function(){
+	const deviceId = ctx.query.deviceId
+	const newprice = ctx.query.price
+	try{
+		const result = await models.deviceInfo.update({deviceId: deviceId},{$set:{price: newprice}})
+		ctx.body = {
+			success: true,
+			message: 'update price success'
+		}
+	}catch(e){
+		console.error(e)
+	}
+}
+
+const deviceManagement_updatestock = async function(){
+	const newstock = ctx.query.stock
+	const deviceId = ctx.query.deviceId
+	try{
+		const result = await models.deviceInfo.update({deviceId: deviceId},{$set: {stock: newstock}})
+		ctx.body = {
+			success: true,
+			message: 'update stock success'
+		}
+	}catch(e){
+		console.error(e)
+	}
+}
+
+const deviceManagement_updateremarks = async (ctx) => {
+	const deviceId = ctx.request.body.deviceId
+	const newremarks = ctx.request.body.remarks
+	try{
+		await models.deviceInfo.update({deviceId: deviceId},{$set: {remarks: newremarks}})
+		ctx.body = {
+			success: true,
+			message: 'update remarks succeed'
+		}
+	}catch(e){
+		console.error(e)
+	}
+}
+
 module.exports = {
 	getEachDeviceDetails,
 	deviceRegister,
@@ -182,5 +226,8 @@ module.exports = {
 	deviceManagement_online,
 	deviceManagement_address,
 	deviceManagement_number,
-	deviceManagement_updateNum
+	deviceManagement_updateNum,
+	deviceManagement_setprice,
+	deviceManagement_updatestock,
+	deviceManagement_updateremarks
 }
