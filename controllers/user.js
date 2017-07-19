@@ -13,15 +13,16 @@ const login = async function(ctx){
 	const cellphone = ctx.request.body.cellphone
 	const password = ctx.request.body.password
 	try{
-		const result = await models.userInfo.findOne({cellphone: cellphone})
-		if(!result || result == '' || result.length == 0 || result == 'null'){
+		const result = await models.userInfo.find({account: cellphone})
+		const data = result[0]
+		if(!result || result == '' || result.length == 0 || result == null){
 			ctx.body = {
 				success: false,
 				message: '用户不存在'
 			}
-		}else if(result.cellphone === cellphone){
-			const pwd = crypto.createHmac('sha1',result.salt).update(password + secret).digest().toString('base64')
-			if(result.password == pwd){
+		}else if(data.account == cellphone){
+			const pwd = crypto.createHmac('sha1',data.salt).update(password + secret).digest().toString('base64')
+			if(data.password == pwd){
 				ctx.session.cellphone = cellphone
 				ctx.body = {
 					success: true,
@@ -68,7 +69,7 @@ const getVerifyCode = async function(ctx){
 	const cellphone = ctx.query.cellphone
 	if(cellphone){
         try{
-            const result = await models.userInfo.findOne({account: cellphone})
+            const result = await models.userInfo.findOne({cellphone: cellphone})
             if(result){
                 ctx.body = {
                     success: false,
