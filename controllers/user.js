@@ -10,19 +10,19 @@ const secret = 'nowdone'
 const message = `尊敬的用户，您的验证码为：${_code.CODE}，请尽快完成验证。【脑洞科技】`
 
 const login = async function(ctx){
-	const account = ctx.request.body.account
+	const cellphone = ctx.request.body.cellphone
 	const password = ctx.request.body.password
 	try{
-		const result = await models.userInfo.findOne({account: account})
+		const result = await models.userInfo.findOne({cellphone: cellphone})
 		if(!result || result == '' || result.length == 0 || result == 'null'){
 			ctx.body = {
 				success: false,
 				message: '用户不存在'
 			}
-		}else if(result.account === account){
+		}else if(result.cellphone === cellphone){
 			const pwd = crypto.createHmac('sha1',result.salt).update(password + secret).digest().toString('base64')
 			if(result.password == pwd){
-				ctx.session.account = account
+				ctx.session.cellphone = cellphone
 				ctx.body = {
 					success: true,
 					message: '登录成功'
