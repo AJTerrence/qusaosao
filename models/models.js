@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema({
-	account: String,
+	cellphone: String,
 	password: String,
 	salt: String,
 	email: String,
@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
 })
 
 const deviceSchema = mongoose.Schema({
-	account: String,
+	cellphone: String,
 	deviceType: String,
 	deviceId: String,
 	deviceNumber: Number,
@@ -38,7 +38,7 @@ const deviceSchema = mongoose.Schema({
 })
 
 const orderSchema = mongoose.Schema({
-	account: String,
+	cellphone: String,
 	deviceId: String,
 	openId: String,
 	type: String,//onlinePayment,adsRevenue,cash

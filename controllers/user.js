@@ -132,10 +132,10 @@ const register = function(ctx){
 	const name = ctx.request.body.name
 	if(cellphone && password && code && name){
 	if(_code.CODE == code){
-		const salt = account + new Date().getTime() + secret
+		const salt = cellphone + new Date().getTime() + secret
 		const pwd = crypto.createHmac('sha1',salt).update(password + secret).digest().toString('base64')
 		const user = {
-			account: account,
+			cellphone: cellphone,
 			password: pwd,
 			salt: salt,
 			email: '',
@@ -157,7 +157,7 @@ const register = function(ctx){
 		}
 		try{
 			models.userInfo.create(user)
-			ctx.session.account = account
+			ctx.session.cellphone = cellphone
 			ctx.body = {
 				success: true,
 				message: '注册成功'
