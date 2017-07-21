@@ -4,7 +4,7 @@ const path = require('path')
 const static = require('koa-static')
 const Router = require('koa-router')
 const bodyParser = require('koa-bodyparser')
-const session = require('koa-session2')
+const session = require('koa-session')
 const config = require('./config/config')
 const device = require('./routes/device')
 const auth = require('./routes/auth')
@@ -19,9 +19,16 @@ app.use(static(path.resolve('views')))
 
 app.use(bodyParser())
 
-app.use(session({
-	key: config.cookieSecret
-}))
+app.keys = [config.cookieSecret]
+const CONFIG = {
+	key: 'koa:sess',
+	maxAge: 7200000,
+	overwrite: true,
+	httpOnly: true,
+	signed: true,
+	rolling: false
+}
+app.use(session(CONFIG,app))
 
 router.use('/api',order.routes(),order.allowedMethods())
 router.use('/api',device.routes(),device.allowedMethods())

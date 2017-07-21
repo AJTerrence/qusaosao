@@ -64,7 +64,7 @@ const deviceManagement_all = async function(ctx){
 	const account = ctx.session.account
 	try{
 		const result = await models.deviceInfo.find({account: account})
-		if(result == '' || result.length == '0' || !result){
+		if(result == '' || result.length == 0 || !result){
 			ctx.body = {
 				success: true,
 				data: {}
@@ -145,7 +145,7 @@ const deviceManagement_number = async function(){
 	const account = ctx.session.account
 	try{
 		const result = await models.deviceInfo.find({account: account})
-		if(!result || result.length == '0' || result == ''){
+		if(!result || result.length == 0 || result == ''){
 			ctx.body = {
 				success: true,
 				data: []
@@ -190,7 +190,7 @@ const deviceManagement_setprice = async function(){
 	}
 }
 
-const deviceManagement_updatestock = async function(){
+const deviceManagement_updatestock = async function(ctx){
 	const newstock = ctx.query.stock
 	const deviceId = ctx.query.deviceId
 	try{

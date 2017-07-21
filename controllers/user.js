@@ -1,6 +1,5 @@
 const models = require('../models/models')
 const crypto = require('crypto')
-//const message = require('./message')
 const _code = require('./code')
 const Request = require('superagent')
 const querystring = require('querystring')
@@ -12,59 +11,39 @@ const message = `尊敬的用户，您的验证码为：${_code.CODE}，请尽�
 const login = async function(ctx){
 	const cellphone = ctx.request.body.cellphone
 	const password = ctx.request.body.password
-	try{
-		const result = await models.userInfo.find({account: cellphone})
-		const data = result[0]
-		if(!result || result == '' || result.length == 0 || result == null){
-			ctx.body = {
-				success: false,
-				message: '用户不存在'
-			}
-		}else if(data.account == cellphone){
-			const pwd = crypto.createHmac('sha1',data.salt).update(password + secret).digest().toString('base64')
-			if(data.password == pwd){
-				ctx.session.cellphone = cellphone
-				ctx.body = {
-					success: true,
-					message: '登录成功'
-				}
-			}else{
-				ctx.body = {
-					success: false,
-					message: '密码不正确'
-				}
-			}
-		}
-	}catch(e){
-		console.error(e)
+	if(!cellphone || !password){
 		ctx.body = {
 			success: false,
-			message: 'error:' + e.message
+			message: '参数错误'
 		}
+	}else{
+		await models.userInfo.findOne({account: cellphone},function(err,doc){
+			if(err) throw err
+				if(doc == null){
+					ctx.body = {
+						success: false,
+						message: '用户不存在'
+					}
+				}else{
+					const pwd = crypto.createHmac('sha1',doc.salt).update(password + secret).digest('base64')
+					if(doc.password === pwd){
+						ctx.session.account = doc.account
+						ctx.body = {
+							success: true,
+							message: '登录成功'
+						}
+					}else{
+						ctx.body = {
+							success: false,
+							message: '密码不正确'
+						}
+					}
+				}
+		})
 	}
 }
-/*
-const getVerifyCode = async function(ctx){
-	const cellphone = ctx.query.cellphone
-	try{
-		const result = await models.userInfo.findOne({account: cellphone})
-		if(!result || result == '' || result.length == 0 || result == 'null'){
-			message.sendMessage(cellphone,ctx)
-		}else{
-			ctx.body = {
-				success: false,
-				message: '获取验证码失败，该用户已注册'
-			}
-		}
-	}catch(e){
-		console.error(e)
-		ctx.body = {
-			success: false,
-			message: e.message
-		}
-	}
-}
-*/
+
+
 const getVerifyCode = async function(ctx){
 	const cellphone = ctx.query.cellphone
 	if(cellphone){
@@ -75,7 +54,7 @@ const getVerifyCode = async function(ctx){
                     success: false,
                     message: '获取验证码失败，该用户已注册'
                 }
-            }else if(!result || result.length == 0 || result == '' || result == null){
+            }else if(result == null){
                 const postData = {
                     agent: false,
                     rejectUnauthorized: false,
@@ -83,7 +62,7 @@ const getVerifyCode = async function(ctx){
                     message: message
                 }
                 const url = 'https://sms-api.luosimao.com/v1/send.json'
-                const key = 'key-edc07f15d2fee2b10f4f2f05296f8234'
+                const key = ''
                 const content = querystring.stringify(postData)
 
                 return new Promise(function(resolve,reject){
@@ -93,7 +72,6 @@ const getVerifyCode = async function(ctx){
                     .auth('api',key)
                     .send(content)
                     .then(function(response){
-                        console.log(response.body)
                         const _data = response.body
                         if(_data.error == '0'){
                             ctx.body = {
@@ -134,7 +112,7 @@ const register = function(ctx){
 	if(cellphone && password && code && name){
 	if(_code.CODE == code){
 		const salt = cellphone + new Date().getTime() + secret
-		const pwd = crypto.createHmac('sha1',salt).update(password + secret).digest().toString('base64')
+		const pwd = crypto.createHmac('sha1',salt).update(password + secret).digest('base64')
 		const user = {
 			account: cellphone,
 			password: pwd,
@@ -158,7 +136,7 @@ const register = function(ctx){
 		}
 		try{
 			models.userInfo.create(user)
-			ctx.session.cellphone = cellphone
+			ctx.session.account = cellphone
 			ctx.body = {
 				success: true,
 				message: '注册成功'

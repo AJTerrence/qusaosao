@@ -1,4 +1,4 @@
-const Koa = require('koa')
+/*const Koa = require('koa')
 const app = new Koa()
 
 const request = require('request-promise')
@@ -80,7 +80,7 @@ var req = https.request(options,function(res){
     req.write(content);
     req.end();*/
 
-
+/*
 const request = require('superagent')
 const querystring = require('querystring')
 const models = require('../models/models')
@@ -138,7 +138,7 @@ module.exports = {
                 })
             }
         }catch(e){
-            console.error(e)
+            console.error(e
             ctx.body = {
                 success: false,
                 message: '发生错误:' + e.message
@@ -146,3 +146,4 @@ module.exports = {
         }
     }
 }
+*/

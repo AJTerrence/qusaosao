@@ -1,15 +1,16 @@
 const models = require('../models/models')
 const _ = require('lodash')
 
-const createOrder = (ctx) => {
-	const data = {
-		deviceId: ctx.query.deviceId,
-		openId: ctx.query.openId,
-		type: ctx.query.type,
-		price: ctx.query.price
-	}
-	const order = {
-		account: '',
+const createOrder = async (ctx) => {
+	const deviceId = ctx.query.deviceId
+	const openid = ctx.query.openid
+	const type = ctx.query.type
+	const price = ctx.query.price
+	if(deviceId && openid && type && price){
+		const result = await models.deviceInfo.findOne({deviceId: data.deviceId})
+		const account = result.account
+		const order = {
+		account: account,
 		deviceId: data.deviceId,
 		openId: data.openId,
 		type: data.type,
@@ -29,6 +30,12 @@ const createOrder = (ctx) => {
 		}
 		console.error(e)
 	}
+	}else{
+		ctx.body = {
+			success: false,
+			message: 'params error'
+		}
+	}
 }
 
 const incomeStatistics = async (ctx) => {
@@ -44,7 +51,7 @@ const incomeStatistics = async (ctx) => {
 				data: {}
 			}
 		}else{
-			const ads = _.filter(result,{type: 'adsRevenue'})
+			const ads = _.filter(result,{type: 'ads'})
 			const adstotal = _.sum(ads,function(object){
 				return object.price
 			})
@@ -61,7 +68,15 @@ const incomeStatistics = async (ctx) => {
 	}
 }
 
+const test = function(ctx){
+	console.log(ctx.session.account)
+	ctx.body = {
+		id: '1'
+	}
+}
+
 module.exports = {
 	createOrder,
-	incomeStatistics
+	incomeStatistics,
+	test
 }
